@@ -1,100 +1,51 @@
 <script setup>
+import QuizHeader from "../components/QuizHeader.vue";
+import QuestionCard from "../components/QuestionCard.vue";
+import {useRoute} from "vue-router";
+import {ref, watch, computed } from "vue";
+import quizes from "../data/quizes.json";
+
+const route = useRoute();
+const quizId = parseInt(route.params.id);
+const quiz = quizes.find(q => q.id === quizId);
+
+const currentQuestionIndex = ref(0);
+const numberOfCorrectAnswer = ref(0);
+/*
+const questionStatus = ref(`${currentQuestionIndex.value}/${quiz.questions.length}`);
+
+watch(currentQuestionIndex.value, () => {
+  questionStatus.value = `${currentQuestionIndex.value}/${quiz.questions.length}`;
+})
+ */
+
+const questionStatus = computed(() => {
+  return `${(currentQuestionIndex.value + 1)}/${quiz.questions.length}`;
+});
+
+const barPercentage = computed(() => {
+  return `${(currentQuestionIndex.value + 1)/quiz.questions.length * 100}%`;
+});
+
+const onOptionSelected = (isCorrect) => {
+  if (isCorrect) {
+    numberOfCorrectAnswer.value++;
+  }
+  currentQuestionIndex.value++;
+}
 
 </script>
 
 <template>
   <div>
-    <header>
-      <h4>Question 1/3</h4>
-      <div class="bar">
-        <div class="completion"></div>
-      </div>
-    </header>
+    <QuizHeader :questionStatus="questionStatus" :barPercentage="barPercentage" />
     <div>
-      <div class="question-container">
-        <h1 class="question">
-          What is the chemical value of table salt?
-        </h1>
-      </div>
-      <div class="options-container">
-        <div class="option">
-          <p class="option-label">A</p>
-          <div class="option-value">
-            NACl
-          </div>
-        </div>
-        <div class="option">
-          <p class="option-label">B</p>
-          <div class="option-value">
-            NACl
-          </div>
-        </div>
-        <div class="option">
-          <p class="option-label">C</p>
-          <div class="option-value">
-            NACl
-          </div>
-        </div>
-        <div class="option">
-          <p class="option-label">D</p>
-          <div class="option-value">
-            NACl
-          </div>
-        </div>
-      </div>
+      <QuestionCard :question="quiz.questions[currentQuestionIndex]"
+      @selectOption="onOptionSelected"/>
     </div>
   </div>
 </template>
 
 <style scoped>
-  header {
-    margin-top: 20px;
-  }
-  header h4 {
-    font-size: 30px;
-  }
-  .bar {
-    width: 300px;
-    height: 50px;
-    border: 3px solid bisque;
-  }
-  .completion {
-    height: 100%;
-    width: 0;
-    background-color: bisque;
-  }
 
-  .question-container {
-    margin-top: 20px;
-  }
-
-  .question {
-    font-size: 40px;
-    margin-bottom: 20px;
-  }
-
-  .option {
-    display: flex;
-    margin-bottom: 20px;
-    cursor: pointer;
-  }
-
-  .option-label {
-    background-color: bisque;
-    width: 60px;
-    height: 60px;
-    font-size: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .option-value {
-    background-color: rgb(244,239,239);
-    width: 100%;
-    font-size: 30px;
-    padding: 0 20px;
-    display: flex;
-    align-items: center;
-  }
 </style>
