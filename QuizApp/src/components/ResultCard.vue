@@ -1,11 +1,14 @@
 <script setup>
+const {quizQuestionLength, numberOfCorrectAnswers} = defineProps(
+    ["quizQuestionLength", "numberOfCorrectAnswers"]
+)
 </script>
 
 <template>
   <div class="results">
     <p>Your results...</p>
     <h1>
-      4/8
+      {{numberOfCorrectAnswers}}/{{quizQuestionLength}}
     </h1>
   </div>
 </template>
